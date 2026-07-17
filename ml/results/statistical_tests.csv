@@ -1,4 +1,0 @@
-Test,Statistic,p-value,Significant (p<0.05)
-Independent t-test (Gender vs Order Amount),-0.9511,0.3416,False
-ANOVA (Income Level vs Order Amount),0.3595,0.7823,False
-Pearson Correlation (Age vs Order Amount),-0.002,0.3598,False
