@@ -285,6 +285,13 @@ h1, h2, h3, h4, p {
   box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
 }
 
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.08) 25%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.08) 75%);
+  background-size: 200% 100%;
+  animation: pulse 1.5s infinite;
+  border-radius: 6px;
+}
+
 .btn-secondary {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-light);
