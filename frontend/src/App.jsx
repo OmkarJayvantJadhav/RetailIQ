@@ -39,7 +39,8 @@ const queryClient = new QueryClient({
 });
 
 function RequireWrite({ children }) {
-  const { canWrite } = useAuth();
+  const { canWriteOperations, canWriteProducts } = useAuth();
+  const canWrite = canWriteOperations || canWriteProducts;
   return canWrite ? children : <Navigate to="/dashboard" replace />;
 }
 
