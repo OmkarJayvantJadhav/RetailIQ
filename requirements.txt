@@ -1,0 +1,35 @@
+# ═══════════════════════════════════════════════════════════
+# RetailIQ Platform — Analytics Pipeline Requirements
+# ═══════════════════════════════════════════════════════════
+
+# Data Processing
+pandas==2.2.0
+numpy==1.26.4
+openpyxl==3.1.5
+
+# Data Generation
+faker==22.5.1
+
+# Database
+sqlalchemy==2.0.25
+psycopg2-binary==2.9.9
+
+# Machine Learning
+scikit-learn==1.4.0
+xgboost==2.1.0
+joblib==1.4.0
+
+# Statistics
+scipy==1.12.0
+
+# Visualization
+matplotlib==3.8.2
+seaborn==0.13.2
+plotly==5.18.0
+
+# Utilities
+python-dotenv==1.0.1
+tqdm==4.66.1
+
+# Jupyter (optional)
+jupyter==1.0.0

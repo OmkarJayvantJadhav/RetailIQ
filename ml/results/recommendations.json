@@ -1,0 +1,32 @@
+[
+    {
+        "category": "Inventory",
+        "priority": "Medium",
+        "insight": "Detected 5631 overstocked items.",
+        "action": "Consider discounting C-class overstock items to free up warehouse space."
+    },
+    {
+        "category": "Inventory",
+        "priority": "High",
+        "insight": "Detected 90 Class A items at risk of stockout.",
+        "action": "Expedite reorders for high-value Class A items immediately to prevent lost revenue."
+    },
+    {
+        "category": "Market Expansion",
+        "priority": "High",
+        "insight": "State Uttar Pradesh is the top performer with $2,175,253,771.62 revenue.",
+        "action": "Allocate 20% more marketing budget to Uttar Pradesh to capitalize on high demand."
+    },
+    {
+        "category": "Market Expansion",
+        "priority": "Low",
+        "insight": "State Delhi is underperforming relative to population.",
+        "action": "Investigate logistical or pricing barriers in Delhi."
+    },
+    {
+        "category": "Customer Retention",
+        "priority": "High",
+        "insight": "Identified 120 'At Risk' customers with previously high purchase frequency.",
+        "action": "Launch a targeted re-engagement email campaign offering a 15% discount for their next purchase."
+    }
+]

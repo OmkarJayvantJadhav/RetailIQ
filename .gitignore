@@ -1,0 +1,62 @@
+# ═══════════════════════════════════════════════════════════
+# RetailIQ Platform — Git Ignore
+# ═══════════════════════════════════════════════════════════
+
+# ── Python ────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+venv/
+.venv/
+env/
+
+# ── Data & Models ─────────────────────────────────────────
+data/raw/*.csv
+data/processed/*.parquet
+data/processed/*.csv
+data/models/*.joblib
+data/models/*.pkl
+ml/models/*.joblib
+ml/models/*.pkl
+
+# ── Environment ───────────────────────────────────────────
+.env
+.env.local
+.env.production
+
+# ── Node.js ───────────────────────────────────────────────
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# ── IDE ───────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Logs ──────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Reports (keep markdown, ignore generated figures) ─────
+reports/figures/*.png
+reports/figures/*.jpg
+
+# ── Docker ────────────────────────────────────────────────
+postgres_data/
+
+# ── Jupyter ───────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── Power BI ──────────────────────────────────────────────
+*.pbix
+.pbi/
