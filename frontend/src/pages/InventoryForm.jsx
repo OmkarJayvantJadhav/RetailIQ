@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: InventoryForm.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -95,7 +100,7 @@ const InventoryForm = () => {
 
       <div className="glass-panel">
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="form-grid-2">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>Warehouse ID</label>
               <select name="warehouse_id" value={formData.warehouse_id} onChange={handleChange} disabled={isEdit} required className="input-field">
@@ -110,7 +115,7 @@ const InventoryForm = () => {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem' }}>
+          <div className="form-grid-3">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>Stock Quantity</label>
               <input type="number" min="0" name="stock_quantity" value={formData.stock_quantity} onChange={handleChange} required className="input-field" />
@@ -125,7 +130,7 @@ const InventoryForm = () => {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="form-grid-2">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>Last Restocked Date</label>
               <input type="date" name="last_restocked" value={formData.last_restocked} onChange={handleChange} required className="input-field" />

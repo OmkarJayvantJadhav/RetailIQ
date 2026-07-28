@@ -1,5 +1,11 @@
+"""
+RetailIQ Backend System
+File: inventory.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import func
 from typing import Optional
 
 from app.core.dependencies import get_db, require_role, get_pagination
@@ -8,16 +14,42 @@ from app.schemas import PaginatedResponse, InventoryCreate, InventoryUpdate, Inv
 
 router = APIRouter()
 
+@router.get("/summary")
+def get_inventory_summary(db: Session = Depends(get_db)):
+    total_skus = db.query(func.count(func.distinct(Inventory.product_id))).scalar() or 0
+    total_stock = db.query(func.sum(Inventory.stock_quantity)).scalar() or 0
+    low_stock = db.query(Inventory).filter(Inventory.stock_quantity <= Inventory.reorder_level).count()
+    total_items = db.query(Inventory).count()
+    healthy_pct = ((total_items - low_stock) / total_items * 100) if total_items > 0 else 100
+    
+    return {
+        "total_skus": total_skus,
+        "total_stock": total_stock,
+        "low_stock_alerts": low_stock,
+        "healthy_stock_pct": round(healthy_pct, 1)
+    }
+
 @router.get("", response_model=PaginatedResponse[InventoryResponse])
 def get_inventory(
     db: Session = Depends(get_db),
     pagination: dict = Depends(get_pagination),
-    warehouse_id: Optional[str] = None
+    warehouse_id: Optional[str] = None,
+    search: Optional[str] = None,
+    low_stock: Optional[bool] = False
 ):
-    query = db.query(Inventory).options(joinedload(Inventory.product))
+    query = db.query(Inventory).join(Product).options(joinedload(Inventory.product))
     
     if warehouse_id:
         query = query.filter(Inventory.warehouse_id == warehouse_id)
+        
+    if search:
+        query = query.filter(
+            (Product.name.ilike(f"%{search}%")) |
+            (Inventory.warehouse_id.ilike(f"%{search}%"))
+        )
+        
+    if low_stock:
+        query = query.filter(Inventory.stock_quantity <= Inventory.reorder_level)
         
     total = query.count()
     items = query.order_by(Inventory.inventory_id.desc()).offset(pagination["skip"]).limit(pagination["limit"]).all()

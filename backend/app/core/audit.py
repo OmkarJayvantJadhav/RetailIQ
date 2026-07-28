@@ -1,8 +1,13 @@
+"""
+RetailIQ Backend System
+File: audit.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 import json
 from sqlalchemy import event
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.attributes import get_history
-from app.models.all import AuditLog, User, AuditLog  # Assuming AuditLog exists in all.py
+from app.models.database_models import AuditLog, User, AuditLog  # Assuming AuditLog exists in all.py
 
 # A context var could be used here to track current user if needed,
 # but for simplicity we'll check if the object has a modified_by or similar,

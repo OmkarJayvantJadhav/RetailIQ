@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: CustomerAnalytics.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../api';
@@ -5,14 +10,17 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
 } from 'recharts';
-import { Users, Star, TrendingDown } from 'lucide-react';
+import { Users, Star, TrendingDown, ShoppingCart, Activity } from 'lucide-react';
 
 const COLORS = ['#818cf8', '#34d399', '#f59e0b', '#f87171', '#60a5fa', '#a78bfa'];
 
 const formatCr = (num) => {
-  if (num >= 10000000) return '₹' + (num / 10000000).toFixed(2) + ' Cr';
-  if (num >= 100000) return '₹' + (num / 100000).toFixed(1) + ' L';
-  return '₹' + num?.toLocaleString('en-IN');
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    notation: 'compact',
+    maximumFractionDigits: 2
+  }).format(num).replace('$', '$ ').trim();
 };
 
 const SEGMENT_COLORS = {
@@ -22,6 +30,7 @@ const SEGMENT_COLORS = {
   'Promising': '#f59e0b',
   'At Risk': '#fb923c',
   'Lost Customers': '#f87171',
+  'Registered / No Purchases': '#94a3b8',
 };
 
 const SEGMENT_DESCRIPTIONS = {
@@ -31,6 +40,7 @@ const SEGMENT_DESCRIPTIONS = {
   'Promising': 'Recent shoppers, but haven\'t spent much yet.',
   'At Risk': 'Spent big money and bought often, but haven\'t returned recently.',
   'Lost Customers': 'Haven\'t purchased in a very long time.',
+  'Registered / No Purchases': 'Created an account but has never completed a purchase.',
 };
 
 export default function CustomerAnalytics() {
@@ -41,6 +51,14 @@ export default function CustomerAnalytics() {
       return r.data;
     }
   });
+
+  const demoMap = {};
+  (data?.demographics || []).forEach(d => {
+    if (!demoMap[d.age_group]) demoMap[d.age_group] = { age_group: d.age_group, Male: 0, Female: 0 };
+    // Make male negative to create the pyramid effect
+    demoMap[d.age_group][d.gender] = d.gender === 'Male' ? -d.count : d.count;
+  });
+  const pyramidData = Object.values(demoMap).sort((a, b) => a.age_group.localeCompare(b.age_group));
 
   if (isLoading) return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -57,7 +75,27 @@ export default function CustomerAnalytics() {
         <p style={{ color: 'var(--text-muted)', marginTop: '0.25rem' }}>Customer loyalty groups, lifetime spending, and marketing strategies.</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+      {/* KPI Summary Cards */}
+      <div className="kpi-grid">
+        {[
+          { label: 'Total Customers', value: (data?.summary?.total_customers || 0).toLocaleString(), icon: Users, color: '#a78bfa' },
+          { label: 'Active Customers', value: (data?.summary?.active_customers || 0).toLocaleString(), icon: Activity, color: '#34d399' },
+          { label: 'Average LTV', value: formatCr(data?.summary?.avg_ltv), icon: Star, color: '#f59e0b' },
+          { label: 'Avg Orders / Cust', value: (data?.summary?.avg_orders || 0).toFixed(1), icon: ShoppingCart, color: '#818cf8' },
+        ].map((card, i) => (
+          <div key={i} className="glass-panel stat-card" style={{ borderLeft: `4px solid ${card.color}`, padding: '1.25rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{card.label}</p>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginTop: '0.25rem' }}>{card.value}</h3>
+              </div>
+              <card.icon size={28} color={card.color} style={{ opacity: 0.8 }} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="form-grid-2">
         {/* RFM Pie */}
         <div className="glass-panel">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
@@ -68,13 +106,13 @@ export default function CustomerAnalytics() {
             <ResponsiveContainer>
               <PieChart>
                 <Pie data={data?.rfm_segments || []} dataKey="count" nameKey="segment"
-                  cx="50%" cy="50%" outerRadius={90}>
+                  cx="50%" cy="50%" innerRadius={60} outerRadius={90} stroke="none">
                   {(data?.rfm_segments || []).map((entry, i) => (
                     <Cell key={i} fill={SEGMENT_COLORS[entry.segment] || COLORS[i % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#fff', borderRadius: '8px' }}
-                  formatter={(v, n) => [v.toLocaleString('en-IN') + ' customers', n]} />
+                <Tooltip itemStyle={{ color: '#e2e8f0' }} contentClassName="custom-tooltip-glass" wrapperClassName="custom-tooltip-glass"
+                  formatter={(v, n) => [v.toLocaleString('en-US') + ' customers', n]} />
                 <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '13px', paddingTop: '10px' }} />
               </PieChart>
             </ResponsiveContainer>
@@ -90,19 +128,42 @@ export default function CustomerAnalytics() {
           <div style={{ height: '280px' }}>
             <ResponsiveContainer>
               <BarChart data={data?.income_distribution || []} margin={{ top: 0, right: 10, left: 20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.9} />
+                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.3} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
                 <XAxis dataKey="income_level" stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis stroke="#94a3b8" width={80} tick={{ fill: '#94a3b8', fontSize: 11 }} tickFormatter={formatCr} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', color: '#fff', borderRadius: '8px' }}
+                <Tooltip itemStyle={{ color: '#e2e8f0' }} contentClassName="custom-tooltip-glass" wrapperClassName="custom-tooltip-glass" cursor={{ fill: 'rgba(255,255,255,0.05)' }}
                   formatter={(v) => [formatCr(v), 'Revenue']} />
-                <Bar dataKey="revenue" radius={[6, 6, 0, 0]} barSize={48}>
-                  {(data?.income_distribution || []).map((_, i) => (
-                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Bar>
+                <Bar dataKey="revenue" fill="url(#colorIncome)" radius={[6, 6, 0, 0]} barSize={40} />
               </BarChart>
             </ResponsiveContainer>
           </div>
+        </div>
+      </div>
+
+      {/* Demographics Pyramid */}
+      <div className="glass-panel">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+          <Users size={20} color="#a78bfa" />
+          <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>Customer Demographics (Age & Gender)</h3>
+        </div>
+        <div style={{ height: '350px' }}>
+          <ResponsiveContainer>
+            <BarChart layout="vertical" data={pyramidData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }} stackOffset="sign">
+              <CartesianGrid strokeDasharray="3 3" stroke="#334155" horizontal={false} />
+              <XAxis type="number" stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 11 }} tickFormatter={(v) => Math.abs(v)} />
+              <YAxis dataKey="age_group" type="category" stroke="#94a3b8" tick={{ fill: '#e2e8f0', fontSize: 11 }} />
+              <Tooltip cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentClassName="custom-tooltip-glass" wrapperClassName="custom-tooltip-glass"
+                formatter={(v, name) => [Math.abs(v).toLocaleString(), name]} />
+              <Bar dataKey="Male" fill="#60a5fa" stackId="stack" name="Male" />
+              <Bar dataKey="Female" fill="#f472b6" stackId="stack" name="Female" />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
@@ -113,7 +174,8 @@ export default function CustomerAnalytics() {
           <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>Top 10 Most Valuable Customers</h3>
         </div>
         <div className="table-container" style={{ border: 'none', borderRadius: '0 0 12px 12px' }}>
-          <table>
+          <div className="table-responsive">
+<table>
             <thead>
               <tr>
                 <th>Customer</th>
@@ -135,6 +197,7 @@ export default function CustomerAnalytics() {
               ))}
             </tbody>
           </table>
+</div>
         </div>
       </div>
 
@@ -144,7 +207,8 @@ export default function CustomerAnalytics() {
           <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>Customer Group Breakdown</h3>
         </div>
         <div className="table-container" style={{ border: 'none', borderRadius: '0 0 12px 12px' }}>
-          <table>
+          <div className="table-responsive">
+<table>
             <thead>
               <tr>
                 <th>Segment</th>
@@ -169,19 +233,21 @@ export default function CustomerAnalytics() {
                       </span>
                     </div>
                   </td>
-                  <td style={{ fontWeight: '600' }}>{seg.count.toLocaleString('en-IN')}</td>
+                  <td style={{ fontWeight: '600' }}>{seg.count.toLocaleString('en-US')}</td>
                   <td>{seg.avg_frequency?.toFixed(1)}</td>
                   <td>{formatCr(seg.avg_monetary)}</td>
                   <td style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
                     {seg.segment === 'Champions' ? 'Reward & retain' :
                       seg.segment === 'At Risk' ? 'Win-back campaign' :
                         seg.segment === 'Lost Customers' ? 'Re-engagement email' :
-                          'Nurture & upsell'}
+                          seg.segment === 'Registered / No Purchases' ? 'First-order promo code' :
+                            'Nurture & upsell'}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+</div>
         </div>
       </div>
     </div>

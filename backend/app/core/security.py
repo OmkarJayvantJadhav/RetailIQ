@@ -1,3 +1,8 @@
+"""
+RetailIQ Backend System
+File: security.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 from datetime import datetime, timedelta, timezone
 from typing import Any, Union
 from jose import jwt

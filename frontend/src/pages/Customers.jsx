@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: Customers.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -63,7 +68,8 @@ const Customers = () => {
         </div>
 
         <div className="table-container" style={{ border: 'none', borderRadius: '0' }}>
-          <table>
+          <div className="table-responsive">
+<table>
             <thead>
               <tr>
                 <th><div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><User size={14} /> Name</div></th>
@@ -136,6 +142,7 @@ const Customers = () => {
               )}
             </tbody>
           </table>
+</div>
         </div>
 
         {/* Pagination Controls */}

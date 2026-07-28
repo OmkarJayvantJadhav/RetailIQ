@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: ProductDetail.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -77,7 +82,7 @@ const ProductDetail = () => {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.75rem' }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><DollarSign size={16} /> Price</span>
-                <span style={{ color: 'var(--accent-blue)', fontWeight: '600', fontSize: '1.25rem' }}>${product?.price?.toFixed(2)}</span>
+                <span style={{ color: 'var(--accent-blue)', fontWeight: '600', fontSize: '1.25rem' }}>{new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(product?.price || 0)}</span>
               </div>
             </div>
           </div>
@@ -113,7 +118,7 @@ const ProductDetail = () => {
                     <div style={{ fontWeight: '500', color: 'white' }}>{s.brand}</div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.25rem', fontSize: '0.875rem' }}>
                       <span style={{ color: 'var(--text-muted)' }}>{s.sub_category}</span>
-                      <span style={{ color: 'var(--accent-blue)' }}>${s.price?.toFixed(2)}</span>
+                      <span style={{ color: 'var(--accent-blue)' }}>{new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(s.price || 0)}</span>
                     </div>
                   </Link>
                 ))

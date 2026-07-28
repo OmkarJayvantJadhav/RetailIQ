@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: Admin.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React, { useState } from 'react';
 import api from '../api';
 

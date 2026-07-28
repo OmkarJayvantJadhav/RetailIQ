@@ -1,16 +1,28 @@
-fastapi==0.115.0
-uvicorn[standard]==0.30.0
-sqlalchemy==2.0.35
+fastapi==0.110.0
+uvicorn==0.27.1
+SQLAlchemy==2.0.27
 psycopg2-binary==2.9.9
-pydantic==2.9.0
-pydantic-settings==2.5.0
+pydantic==2.6.3
+pydantic-settings==2.2.1
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 bcrypt==3.2.2
 python-multipart==0.0.9
-pandas==2.2.0
+pandas==2.2.1
+
+# AI & ML
+xgboost==2.0.3
+scikit-learn==1.4.1.post1
+numpy==1.26.4
+matplotlib==3.8.3
+seaborn==0.13.2
+statsmodels==0.14.1
 
 openpyxl==3.1.5
 python-dotenv==1.0.1
-apscheduler==3.10.4
 websockets==13.0
+
+# GCP / BigQuery
+google-cloud-bigquery==3.21.0
+pandas-gbq==0.23.0
+db-dtypes==1.2.0

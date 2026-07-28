@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: ProtectedRoute.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 

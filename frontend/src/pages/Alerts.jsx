@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: Alerts.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../api';

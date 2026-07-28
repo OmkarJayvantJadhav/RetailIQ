@@ -1,3 +1,8 @@
+"""
+RetailIQ Backend System
+File: orders.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session, joinedload
 from typing import Optional

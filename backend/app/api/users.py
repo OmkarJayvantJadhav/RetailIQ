@@ -1,3 +1,8 @@
+"""
+RetailIQ Backend System
+File: users.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.dependencies import get_db, require_role, get_pagination

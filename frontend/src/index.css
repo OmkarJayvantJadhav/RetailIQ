@@ -50,12 +50,58 @@ h1, h2, h3, h4, p {
   padding: 1.5rem;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(0, 243, 255, 0.02);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 50%; height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.03), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.7s ease;
+}
+
+.glass-panel:hover::before {
+  left: 200%;
 }
 
 .glass-panel:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 243, 255, 0.05), 0 0 15px rgba(0, 243, 255, 0.15);
   border-color: var(--border-glow);
+}
+
+/* Recharts Custom Tooltip Glass */
+.custom-tooltip-glass {
+  background: rgba(15, 23, 42, 0.85) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+  padding: 12px 16px !important;
+  color: #f8fafc !important;
+}
+
+.custom-tooltip-glass * {
+  color: #f8fafc !important;
+}
+
+/* Progress Bars */
+.progress-container {
+  width: 100%;
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 99px;
+  height: 8px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.progress-bar {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 1s ease-in-out;
 }
 
 /* Layout */
@@ -905,4 +951,29 @@ tr:hover td {
   .landing-capabilities-grid { grid-template-columns: 1fr; }
   .landing-roles-grid { grid-template-columns: 1fr; }
   .landing-hero-actions { flex-direction: column; align-items: center; }
+}
+
+
+/* Responsive Grid Utility Classes */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+.kpi-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.form-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+.form-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .kpi-grid-3 { grid-template-columns: 1fr; }
+  .form-grid-2 { grid-template-columns: 1fr; }
+  .form-grid-3 { grid-template-columns: 1fr; }
 }

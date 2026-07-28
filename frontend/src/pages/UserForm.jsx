@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: UserForm.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -103,7 +108,7 @@ const UserForm = () => {
             </div>
           )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="form-grid-2">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>Full Name</label>
               <input type="text" name="full_name" value={formData.full_name} onChange={handleChange} required className="input-field" placeholder="e.g. John Doe" />

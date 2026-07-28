@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: Layout.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar';

@@ -1,3 +1,8 @@
+"""
+RetailIQ Backend System
+File: config.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
 

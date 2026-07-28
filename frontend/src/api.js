@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: api.js
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import axios from 'axios';
 
 const api = axios.create({

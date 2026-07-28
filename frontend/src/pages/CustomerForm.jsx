@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: CustomerForm.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -96,7 +101,7 @@ const CustomerForm = () => {
 
       <div className="glass-panel">
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="form-grid-2">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>First Name</label>
               <input type="text" name="first_name" value={formData.first_name} onChange={handleChange} required className="input-field" placeholder="First Name" />
@@ -107,7 +112,7 @@ const CustomerForm = () => {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="form-grid-2">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>Email Address</label>
               <input type="email" name="email" value={formData.email} onChange={handleChange} className="input-field" placeholder="Email" />
@@ -118,7 +123,7 @@ const CustomerForm = () => {
             </div>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.5rem' }}>
+          <div className="form-grid-3">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>Age</label>
               <input type="number" name="age" value={formData.age} onChange={handleChange} className="input-field" placeholder="Age" />
@@ -144,7 +149,7 @@ const CustomerForm = () => {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="form-grid-2">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>City</label>
               <input type="text" name="city" value={formData.city} onChange={handleChange} required className="input-field" placeholder="City" />
@@ -172,7 +177,7 @@ const CustomerForm = () => {
             </div>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="form-grid-2">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>Join Date</label>
               <input type="date" name="join_date" value={formData.join_date} onChange={handleChange} required className="input-field" />

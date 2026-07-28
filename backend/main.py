@@ -1,8 +1,13 @@
+"""
+RetailIQ Backend System
+File: main.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.audit import setup_audit_logging
-from app.api import auth, dashboard, products, customers, orders, inventory, warehouses, returns, payments, analytics, forecast, recommendations, notifications, users, reports, upload
+from app.api import auth, dashboard, products, customers, orders, inventory, analytics, forecast, recommendations, notifications, users, reports, upload, data
 
 setup_audit_logging()
 
@@ -24,9 +29,6 @@ for router, prefix, tag in [
     (customers.router, "/customers", "customers"),
     (orders.router, "/orders", "orders"),
     (inventory.router, "/inventory", "inventory"),
-    (warehouses.router, "/warehouses", "warehouses"),
-    (returns.router, "/returns", "returns"),
-    (payments.router, "/payments", "payments"),
     (analytics.router, "/analytics", "analytics"),
     (forecast.router, "/forecast", "forecast"),
     (recommendations.router, "/recommendations", "recommendations"),
@@ -35,6 +37,7 @@ for router, prefix, tag in [
     (users.router, "/users", "users"),
     (reports.router, "/reports", "reports"),
     (upload.router, "/upload", "upload"),
+    (data.router, "/data", "data"),
 ]:
     app.include_router(router, prefix=f"{settings.API_V1_STR}{prefix}", tags=[tag])
 

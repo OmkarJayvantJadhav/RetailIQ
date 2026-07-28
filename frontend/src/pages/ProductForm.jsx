@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: ProductForm.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -94,7 +99,7 @@ const ProductForm = () => {
             <input type="text" name="name" value={formData.name} onChange={handleChange} required className="input-field" placeholder="e.g., Boat Rockerz 450" />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="form-grid-2">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>Brand</label>
               <input type="text" name="brand" value={formData.brand} onChange={handleChange} required className="input-field" placeholder="e.g., Boat" />
@@ -112,14 +117,14 @@ const ProductForm = () => {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="form-grid-2">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>Sub-Category</label>
               <input type="text" name="sub_category" value={formData.sub_category} onChange={handleChange} className="input-field" placeholder="e.g., Headphones" />
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="form-grid-2">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label style={{ fontWeight: '600', fontSize: '0.9rem' }}>Selling Price (₹)</label>
               <input type="number" step="0.01" name="price" value={formData.price} onChange={handleChange} required className="input-field" placeholder="0.00" />

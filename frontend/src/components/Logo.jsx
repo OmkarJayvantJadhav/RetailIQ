@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: Logo.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React from 'react';
 
 const Logo = ({ size = 36, className = '' }) => {

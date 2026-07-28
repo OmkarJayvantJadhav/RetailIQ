@@ -1,3 +1,8 @@
+"""
+RetailIQ Backend System
+File: websockets.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 from fastapi import WebSocket
 from typing import List, Dict
 

@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: AIInsights.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../api';
@@ -10,11 +15,11 @@ const TYPE_STYLES = {
   info: { color: '#818cf8', bg: 'rgba(129,140,248,0.1)', border: '#818cf8', Icon: Info },
 };
 
-export default function Recommendations() {
+export default function AIInsights() {
   const { data, isLoading } = useQuery({
     queryKey: ['recommendations'],
     queryFn: async () => {
-      const r = await api.get('/analytics/recommendations');
+      const r = await api.get('/recommendations');
       return r.data;
     }
   });
@@ -67,11 +72,11 @@ export default function Recommendations() {
                 </p>
                 <div style={{
                   background: 'rgba(255,255,255,0.04)', borderRadius: '8px', padding: '0.6rem 1rem',
-                  display: 'flex', alignItems: 'center', gap: '0.5rem'
+                  display: 'flex', alignItems: 'flex-start', gap: '0.5rem'
                 }}>
-                  <Lightbulb size={14} color={style.color} />
-                  <span style={{ fontSize: '0.85rem', color: style.color, fontWeight: '500' }}>
-                    Recommended Action: {rec.action}
+                  <Lightbulb size={14} color={style.color} style={{ marginTop: '0.2rem', flexShrink: 0 }} />
+                  <span style={{ fontSize: '0.85rem', color: style.color, fontWeight: '500', whiteSpace: 'pre-line', lineHeight: '1.5' }}>
+                    {rec.action}
                   </span>
                 </div>
               </div>

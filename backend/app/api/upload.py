@@ -1,10 +1,15 @@
+"""
+RetailIQ Backend System
+File: upload.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 import io
 import pandas as pd
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from sqlalchemy.dialects.postgresql import insert
 from app.core.dependencies import get_db
-from app.models.all import Product, Customer
+from app.models.database_models import Product, Customer
 
 router = APIRouter()
 

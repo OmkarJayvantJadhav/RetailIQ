@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: App.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -21,13 +26,14 @@ import Alerts from './pages/Alerts';
 import Admin from './pages/Admin';
 import Users from './pages/Users';
 import UserForm from './pages/UserForm';
+import DatabaseExplorer from './pages/DatabaseExplorer';
 
 import SalesAnalytics from './pages/analytics/SalesAnalytics';
 import CustomerAnalytics from './pages/analytics/CustomerAnalytics';
 import MarketAnalytics from './pages/analytics/MarketAnalytics';
 import InventoryAnalytics from './pages/analytics/InventoryAnalytics';
 import ForecastPage from './pages/analytics/ForecastPage';
-import Recommendations from './pages/analytics/Recommendations';
+import AIInsights from './pages/analytics/AIInsights';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -66,7 +72,9 @@ function App() {
             <Route path="/analytics/market" element={<MarketAnalytics />} />
             <Route path="/analytics/inventory" element={<InventoryAnalytics />} />
             <Route path="/analytics/forecast" element={<ForecastPage />} />
-            <Route path="/analytics/recommendations" element={<Recommendations />} />
+            <Route path="/analytics/recommendations" element={<AIInsights />} />
+            
+            <Route path="/data" element={<DatabaseExplorer />} />
 
             {/* Operations */}
             <Route path="/orders" element={<Orders />} />

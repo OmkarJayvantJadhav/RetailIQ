@@ -1,3 +1,8 @@
+"""
+RetailIQ Backend System
+File: notifications.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import text

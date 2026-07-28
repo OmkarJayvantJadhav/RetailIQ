@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: Login.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Lock, ArrowRight, ShieldCheck } from 'lucide-react';

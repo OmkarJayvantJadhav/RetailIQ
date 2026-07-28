@@ -1,3 +1,8 @@
+"""
+RetailIQ Backend System
+File: database_models.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 from sqlalchemy import Column, Integer, String, Boolean, DECIMAL, Date, DateTime, ForeignKey, BigInteger, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func

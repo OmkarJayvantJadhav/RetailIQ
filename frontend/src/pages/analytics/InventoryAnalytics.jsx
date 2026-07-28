@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: InventoryAnalytics.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../api';
@@ -38,7 +43,7 @@ export default function InventoryAnalytics() {
       </div>
 
       {/* Summary Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+      <div className="kpi-grid">
         {[
           { label: 'Total SKUs', value: summary.total_items, icon: Archive, color: '#818cf8' },
           { label: 'Out of Stock', value: summary.out_of_stock, icon: XCircle, color: '#f87171' },
@@ -49,7 +54,7 @@ export default function InventoryAnalytics() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{card.label}</p>
-                <h3 style={{ fontSize: '2rem', fontWeight: '700', marginTop: '0.25rem' }}>{card.value?.toLocaleString('en-IN') || 0}</h3>
+                <h3 style={{ fontSize: '2rem', fontWeight: '700', marginTop: '0.25rem' }}>{card.value?.toLocaleString('en-US') || 0}</h3>
               </div>
               <card.icon size={32} color={card.color} style={{ opacity: 0.8 }} />
             </div>
@@ -78,7 +83,8 @@ export default function InventoryAnalytics() {
             <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>Products at Stockout Risk</h3>
           </div>
           <div className="table-container" style={{ border: 'none', borderRadius: '0 0 12px 12px' }}>
-            <table>
+            <div className="table-responsive">
+<table>
               <thead>
                 <tr>
                   <th>Product</th>
@@ -100,14 +106,21 @@ export default function InventoryAnalytics() {
                     </td>
                     <td>{row.reorder_level}</td>
                     <td>
-                      <span className={`badge ${row.stock === 0 ? 'badge-danger' : 'badge-warning'}`}>
-                        {row.stock === 0 ? 'OUT OF STOCK' : `${row.stock_pct}% stocked`}
-                      </span>
+                      <div style={{ width: '100%', minWidth: '100px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '4px', fontWeight: 600, color: row.stock === 0 ? '#f87171' : '#f59e0b' }}>
+                          <span>{row.stock === 0 ? 'OUT OF STOCK' : 'Low Stock'}</span>
+                          <span>{Math.round(row.stock_pct)}%</span>
+                        </div>
+                        <div className="progress-container">
+                          <div className="progress-bar" style={{ width: `${Math.min(100, Math.max(0, row.stock_pct))}%`, backgroundColor: row.stock === 0 ? '#f87171' : '#f59e0b' }} />
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+</div>
           </div>
         </div>
       )}
@@ -136,7 +149,8 @@ export default function InventoryAnalytics() {
               <h3 style={{ fontSize: '1.125rem', fontWeight: '600' }}>Product Importance Classification (All Products)</h3>
             </div>
             <div className="table-container" style={{ border: 'none', borderRadius: '0 0 12px 12px' }}>
-              <table>
+              <div className="table-responsive">
+<table>
                 <thead>
                   <tr>
                     <th>Product</th>
@@ -152,7 +166,7 @@ export default function InventoryAnalytics() {
                       <td style={{ fontWeight: '600' }}>{row.name}</td>
                       <td style={{ color: 'var(--text-muted)' }}>{row.category}</td>
                       <td style={{ color: '#818cf8', fontWeight: '600' }}>
-                        ₹{row.revenue?.toLocaleString('en-IN', { maximumFractionDigits: 0 })}
+                        ₹{row.revenue?.toLocaleString('en-US', { maximumFractionDigits: 0 })}
                       </td>
                       <td>{row.cumulative_pct}%</td>
                       <td>
@@ -167,6 +181,7 @@ export default function InventoryAnalytics() {
                   ))}
                 </tbody>
               </table>
+</div>
             </div>
             <div style={{ padding: '1rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #334155' }}>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>

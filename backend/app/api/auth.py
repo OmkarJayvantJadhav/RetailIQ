@@ -1,3 +1,8 @@
+"""
+RetailIQ Backend System
+File: auth.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 from datetime import timedelta, datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm

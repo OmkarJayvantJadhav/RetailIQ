@@ -1,3 +1,8 @@
+"""
+RetailIQ Backend System
+File: dependencies.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 from typing import Generator, List
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer

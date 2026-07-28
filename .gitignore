@@ -60,3 +60,6 @@ postgres_data/
 # ── Power BI ──────────────────────────────────────────────
 *.pbix
 .pbi/
+
+# GCP Credentials
+gcp-service-account.json

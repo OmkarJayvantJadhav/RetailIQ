@@ -1,8 +1,13 @@
+/*
+ * RetailIQ Frontend Application
+ * File: Sidebar.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Package, Archive, Bell, Settings, LogOut, Hexagon,
-  TrendingUp, Users, MapPin, BarChart2, Lightbulb, Activity, User, ShoppingBag, Menu, X
+  TrendingUp, Users, MapPin, BarChart2, Lightbulb, Activity, User, ShoppingBag, Menu, X, Database
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import Logo from './Logo';
@@ -71,6 +76,7 @@ const Sidebar = () => {
       <nav style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <NavGroup label="Overview">
           {navLink('/dashboard', LayoutDashboard, 'Dashboard')}
+          {navLink('/data', Database, 'Dataset Viewer')}
         </NavGroup>
 
         <NavGroup label="Analytics">
@@ -79,7 +85,7 @@ const Sidebar = () => {
           {navLink('/analytics/market', MapPin, 'Market Analytics')}
           {navLink('/analytics/inventory', BarChart2, 'Inventory Analytics')}
           {navLink('/analytics/forecast', Activity, 'Demand Forecast')}
-          {navLink('/analytics/recommendations', Lightbulb, 'Recommendations')}
+          {navLink('/analytics/recommendations', Lightbulb, 'AI Insights')}
         </NavGroup>
 
         <NavGroup label="Operations">

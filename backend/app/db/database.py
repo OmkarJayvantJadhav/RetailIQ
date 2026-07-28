@@ -1,3 +1,8 @@
+"""
+RetailIQ Backend System
+File: database.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
 from app.core.config import settings

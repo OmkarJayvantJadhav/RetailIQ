@@ -1,3 +1,8 @@
+"""
+RetailIQ Backend System
+File: api_schemas.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime, date

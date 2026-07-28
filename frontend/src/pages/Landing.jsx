@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: Landing.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {

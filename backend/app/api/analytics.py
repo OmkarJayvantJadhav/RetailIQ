@@ -1,3 +1,8 @@
+"""
+RetailIQ Backend System
+File: analytics.py
+Purpose: Provides backend business logic, API routing, or database models for the RetailIQ platform.
+"""
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import text
@@ -72,45 +77,123 @@ def get_sales_analytics(db: Session = Depends(get_db), current_user=Depends(get_
     status_rows = db.execute(status_q).fetchall()
     order_status = [{"status": r.status, "count": int(r.count)} for r in status_rows]
 
+    # Profitability by Category
+    profit_q = text("""
+        SELECT p.category, 
+               SUM(oi.unit_price) as revenue, 
+               SUM(oi.unit_price - p.cost_price) as profit,
+               SUM(oi.unit_price - p.cost_price) / NULLIF(SUM(oi.unit_price), 0) as margin
+        FROM order_items oi
+        JOIN products p ON oi.product_id = p.product_id
+        JOIN orders o ON oi.order_id = o.order_id
+        WHERE o.status != 'cancelled'
+        GROUP BY p.category
+        ORDER BY profit DESC
+        LIMIT 10
+    """)
+    profit_rows = db.execute(profit_q).fetchall()
+    profit_by_category = [{"category": r.category, "revenue": float(r.revenue),
+                           "profit": float(r.profit), "margin": float(r.margin) if r.margin else 0.0} for r in profit_rows]
+
+    # KPIs Summary
+    summary_q = text("""
+        SELECT 
+            SUM(oi.line_total) as total_revenue,
+            COUNT(DISTINCT o.order_id) as total_orders,
+            COUNT(DISTINCT p.product_id) as total_products,
+            SUM(oi.unit_price - p.cost_price) / NULLIF(SUM(oi.unit_price), 0) as avg_profit_margin
+        FROM orders o
+        JOIN order_items oi ON o.order_id = oi.order_id
+        JOIN products p ON oi.product_id = p.product_id
+        WHERE o.status != 'cancelled'
+    """)
+    summary_row = db.execute(summary_q).fetchone()
+    summary = {
+        "total_revenue": float(summary_row.total_revenue or 0),
+        "total_orders": int(summary_row.total_orders or 0),
+        "total_products": int(summary_row.total_products or 0),
+        "avg_profit_margin": float(summary_row.avg_profit_margin or 0)
+    }
+
     return {
+        "summary": summary,
         "revenue_trend": revenue_trend,
         "top_products": top_products,
         "category_sales": category_sales,
         "subcategory_sales": subcategory_sales,
         "order_status": order_status,
+        "profit_by_category": profit_by_category,
     }
 
 
 @router.get("/customers")
 def get_customer_analytics(db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    # KPIs Summary
+    summary_q = text("""
+        SELECT 
+            (SELECT COUNT(*) FROM customers) as total_customers,
+            (SELECT COUNT(DISTINCT customer_id) FROM orders WHERE status != 'cancelled') as active_customers,
+            (SELECT SUM(line_total) FROM order_items oi JOIN orders o ON oi.order_id = o.order_id WHERE o.status != 'cancelled') as total_revenue,
+            (SELECT COUNT(order_id) FROM orders WHERE status != 'cancelled') as total_orders
+    """)
+    s_row = db.execute(summary_q).fetchone()
+    active = int(s_row.active_customers or 0)
+    summary = {
+        "total_customers": int(s_row.total_customers or 0),
+        "active_customers": active,
+        "avg_ltv": float(s_row.total_revenue or 0) / active if active else 0.0,
+        "avg_orders": float(s_row.total_orders or 0) / active if active else 0.0
+    }
+
     # RFM Segments
     rfm_q = text("""
-        WITH rfm AS (
+        WITH customer_totals AS (
             SELECT
                 c.customer_id,
-                CURRENT_DATE - MAX(o.order_date) as recency,
-                COUNT(o.order_id) as frequency,
-                SUM(o.total_amount) as monetary
+                MAX(o.order_date) as last_order,
+                COUNT(DISTINCT o.order_id) as frequency,
+                SUM(oi.line_total) as monetary
             FROM customers c
-            JOIN orders o ON c.customer_id = o.customer_id
-            WHERE o.status != 'cancelled'
+            LEFT JOIN orders o ON c.customer_id = o.customer_id AND o.status != 'cancelled'
+            LEFT JOIN order_items oi ON o.order_id = oi.order_id
             GROUP BY c.customer_id
+        ),
+        rfm AS (
+            SELECT *,
+                CURRENT_DATE - last_order as recency
+            FROM customer_totals
+            WHERE frequency > 0
         ),
         rfm_scored AS (
             SELECT *,
-                CASE WHEN recency <= 30 THEN 'Champions'
-                     WHEN recency <= 60 AND frequency >= 5 THEN 'Loyal Customers'
-                     WHEN recency <= 90 THEN 'Potential Loyalists'
-                     WHEN recency > 180 AND frequency <= 2 THEN 'At Risk'
-                     WHEN recency > 270 THEN 'Lost Customers'
+                NTILE(5) OVER (ORDER BY recency DESC) as r_score,
+                NTILE(5) OVER (ORDER BY frequency ASC) as f_score,
+                NTILE(5) OVER (ORDER BY monetary ASC) as m_score
+            FROM rfm
+        ),
+        rfm_segments AS (
+            SELECT customer_id, recency, frequency, monetary,
+                CASE WHEN r_score >= 4 AND f_score >= 4 AND m_score >= 4 THEN 'Champions'
+                     WHEN r_score >= 3 AND f_score >= 3 THEN 'Loyal Customers'
+                     WHEN r_score >= 4 AND f_score >= 2 THEN 'Potential Loyalists'
+                     WHEN r_score >= 4 AND f_score = 1 THEN 'Promising'
+                     WHEN r_score <= 2 AND f_score >= 3 AND m_score >= 3 THEN 'At Risk'
+                     WHEN r_score <= 2 AND f_score < 3 THEN 'Lost Customers'
                      ELSE 'Promising'
                 END as segment
-            FROM rfm
+            FROM rfm_scored
+            
+            UNION ALL
+            
+            SELECT customer_id, NULL as recency, 0 as frequency, 0 as monetary,
+                'Registered / No Purchases' as segment
+            FROM customer_totals
+            WHERE frequency = 0
         )
         SELECT segment, COUNT(*) as count,
                AVG(monetary) as avg_monetary,
                AVG(frequency) as avg_frequency
-        FROM rfm_scored
+        FROM rfm_segments
         GROUP BY segment
         ORDER BY count DESC
     """)
@@ -123,10 +206,11 @@ def get_customer_analytics(db: Session = Depends(get_db), current_user=Depends(g
     clv_q = text("""
         SELECT c.customer_id, c.first_name || ' ' || c.last_name as name,
                c.city, c.state, c.income_level,
-               COUNT(o.order_id) as total_orders,
-               SUM(o.total_amount) as lifetime_value
+               COUNT(DISTINCT o.order_id) as total_orders,
+               SUM(oi.line_total) as lifetime_value
         FROM customers c
         JOIN orders o ON c.customer_id = o.customer_id
+        JOIN order_items oi ON o.order_id = oi.order_id
         WHERE o.status != 'cancelled'
         GROUP BY c.customer_id, c.first_name, c.last_name, c.city, c.state, c.income_level
         ORDER BY lifetime_value DESC
@@ -139,31 +223,63 @@ def get_customer_analytics(db: Session = Depends(get_db), current_user=Depends(g
 
     # Income level distribution
     income_q = text("""
-        SELECT c.income_level, SUM(o.total_amount) as revenue, COUNT(DISTINCT c.customer_id) as customers
-        FROM customers c JOIN orders o ON c.customer_id = o.customer_id
+        SELECT c.income_level, SUM(oi.line_total) as revenue, COUNT(DISTINCT c.customer_id) as customers
+        FROM customers c 
+        JOIN orders o ON c.customer_id = o.customer_id
+        JOIN order_items oi ON o.order_id = oi.order_id
         WHERE o.status != 'cancelled'
         GROUP BY c.income_level ORDER BY revenue DESC
     """)
     income_rows = db.execute(income_q).fetchall()
     income_distribution = [{"income_level": r.income_level, "revenue": float(r.revenue), "customers": int(r.customers)} for r in income_rows]
 
+    # Demographics (Age Group and Gender)
+    demo_q = text("""
+        SELECT 
+            CASE 
+                WHEN age < 25 THEN '18-24'
+                WHEN age < 35 THEN '25-34'
+                WHEN age < 45 THEN '35-44'
+                WHEN age < 55 THEN '45-54'
+                ELSE '55+' END as age_group,
+            gender,
+            COUNT(*) as count
+        FROM customers
+        GROUP BY 1, 2 ORDER BY 1, 2
+    """)
+    demo_rows = db.execute(demo_q).fetchall()
+    demographics = [{"age_group": r.age_group, "gender": r.gender, "count": int(r.count)} for r in demo_rows]
+
     return {
+        "summary": summary,
         "rfm_segments": rfm_segments,
         "top_customers": top_customers,
         "income_distribution": income_distribution,
+        "demographics": demographics,
     }
 
 
 @router.get("/market")
 def get_market_analytics(db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    # KPIs Summary
+    summary_q = text("""
+        SELECT 
+            COUNT(DISTINCT shipping_state) as total_regions,
+            COUNT(DISTINCT shipping_city) as total_cities,
+            SUM(total_amount) / NULLIF(COUNT(order_id), 0) as global_aov
+        FROM orders WHERE status != 'cancelled'
+    """)
+    s_row = db.execute(summary_q).fetchone()
+    
     # Revenue by state
     state_q = text("""
         SELECT o.shipping_state as state,
-               SUM(o.total_amount) as revenue,
+               SUM(oi.line_total) as revenue,
                COUNT(DISTINCT o.customer_id) as customers,
-               COUNT(o.order_id) as orders,
-               AVG(o.total_amount) as aov
+               COUNT(DISTINCT o.order_id) as orders,
+               SUM(oi.line_total) / NULLIF(COUNT(DISTINCT o.order_id), 0) as aov
         FROM orders o
+        JOIN order_items oi ON o.order_id = oi.order_id
         WHERE o.status != 'cancelled' AND o.shipping_state IS NOT NULL
         GROUP BY o.shipping_state
         ORDER BY revenue DESC
@@ -176,17 +292,30 @@ def get_market_analytics(db: Session = Depends(get_db), current_user=Depends(get
     # Revenue by city (top 10)
     city_q = text("""
         SELECT o.shipping_city as city, o.shipping_state as state,
-               SUM(o.total_amount) as revenue, COUNT(o.order_id) as orders
+               SUM(oi.line_total) as revenue, COUNT(DISTINCT o.order_id) as orders,
+               COUNT(DISTINCT o.customer_id) as customers
         FROM orders o
+        JOIN order_items oi ON o.order_id = oi.order_id
         WHERE o.status != 'cancelled' AND o.shipping_city IS NOT NULL
         GROUP BY o.shipping_city, o.shipping_state
         ORDER BY revenue DESC
     """)
     city_rows = db.execute(city_q).fetchall()
-    city_revenue = [{"city": r.city, "state": r.state,
-                     "revenue": float(r.revenue), "orders": int(r.orders)} for r in city_rows]
+    city_revenue = [{"city": r.city, "state": r.state, "revenue": float(r.revenue), "customers": int(r.customers), "orders": int(r.orders)} for r in city_rows]
 
-    return {"state_revenue": state_revenue, "city_revenue": city_revenue}
+    top_region_name = state_revenue[0]["state"] if state_revenue else "N/A"
+    summary = {
+        "total_regions": int(s_row.total_regions or 0),
+        "total_cities": int(s_row.total_cities or 0),
+        "global_aov": float(s_row.global_aov or 0),
+        "top_region": top_region_name
+    }
+
+    return {
+        "summary": summary,
+        "state_revenue": state_revenue,
+        "city_revenue": city_revenue
+    }
 
 
 @router.get("/inventory")

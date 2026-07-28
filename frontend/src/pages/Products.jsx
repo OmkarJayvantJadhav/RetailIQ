@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: Products.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -63,7 +68,8 @@ const Products = () => {
         </div>
 
         <div className="table-container" style={{ border: 'none', borderRadius: '0' }}>
-          <table>
+          <div className="table-responsive">
+<table>
             <thead>
               <tr>
                 <th><div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Fingerprint size={14} /> ID</div></th>
@@ -106,7 +112,7 @@ const Products = () => {
                       <span className="badge badge-success">{product.sub_category}</span>
                     </td>
                     <td style={{ fontWeight: '600', color: 'var(--accent-blue)' }}>
-                      ₹{parseFloat(product.price).toFixed(2)}
+                      {new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(product.price)}
                     </td>
                     <td>
                       <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
@@ -135,6 +141,7 @@ const Products = () => {
               )}
             </tbody>
           </table>
+</div>
         </div>
 
         {/* Pagination Controls */}

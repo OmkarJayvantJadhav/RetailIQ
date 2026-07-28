@@ -1,3 +1,8 @@
+/*
+ * RetailIQ Frontend Application
+ * File: Orders.jsx
+ * Purpose: React component providing UI layout, state management, or data visualization.
+ */
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -74,7 +79,8 @@ const Orders = () => {
         </div>
 
         <div className="table-container" style={{ border: 'none', borderRadius: '0' }}>
-          <table>
+          <div className="table-responsive">
+<table>
             <thead>
               <tr>
                 <th><div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><ShoppingBag size={14} /> Order</div></th>
@@ -115,7 +121,7 @@ const Orders = () => {
                       </span>
                     </td>
                     <td style={{ fontWeight: '600', color: 'var(--accent-blue)' }}>
-                      ₹{parseFloat(order.total_amount).toFixed(2)}
+                      {new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(order.total_amount)}
                     </td>
                     <td>
                       <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
@@ -144,6 +150,7 @@ const Orders = () => {
               )}
             </tbody>
           </table>
+</div>
         </div>
 
         <div style={{ 
