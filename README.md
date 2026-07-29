@@ -12,7 +12,7 @@
 
 An end-to-end analytics ecosystem featuring synthetic data generation, robust ETL pipelines, machine learning demand forecasting, and a full-stack interactive dashboard.
 
-[Explore the Docs](#-documentation) • [Report Bug](#-support) • [Request Feature](#-support)
+[Explore the Docs](./DOCUMENTATION.md) • [Report Bug](#-support) • [Request Feature](#-support)
 
 </div>
 
@@ -21,6 +21,7 @@ An end-to-end analytics ecosystem featuring synthetic data generation, robust ET
 ## 📖 Table of Contents
 
 - [About the Project](#-about-the-project)
+- [Comprehensive Documentation](#-comprehensive-documentation)
 - [Key Features](#-key-features)
 - [Architecture](#-architecture)
 - [Tech Stack](#-tech-stack)
@@ -43,6 +44,14 @@ An end-to-end analytics ecosystem featuring synthetic data generation, robust ET
 **RetailIQ** is a comprehensive, production-ready enterprise solution designed to demonstrate advanced capabilities in data engineering, machine learning, and full-stack web development. It simulates a modern retail environment, processing millions of rows of data to extract actionable insights, optimize inventory, and forecast future demand.
 
 Whether you're exploring the intricacies of PostgreSQL optimization, the performance of FastAPI, or the dynamic capabilities of React, RetailIQ provides a robust playground and a scalable template for real-world applications.
+
+---
+
+## 📚 Comprehensive Documentation
+
+For a detailed deep dive into the system architecture, database schema, API endpoints, module breakdown, and developer guides, please refer to our complete professional documentation:
+
+👉 **[View Complete Documentation](./DOCUMENTATION.md)**
 
 ---
 
@@ -254,6 +263,25 @@ These cover:
 - Common Table Expressions (`CTEs`) for readable complex logic
 
 These queries can be used directly in tools like pgAdmin, DBeaver, or Metabase.
+
+---
+
+## 🤝 Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## ✍️ Author
+
+**RetailIQ Development Team**
+Designed and built for advanced enterprise retail analytics.
 
 ---
 
