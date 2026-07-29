@@ -94,7 +94,7 @@ class CustomerBase(BaseModel):
     city: str
     state: str
     income_level: str
-    join_date: date
+    join_date: datetime
     is_active: bool = True
 
 class CustomerCreate(CustomerBase):
@@ -142,7 +142,7 @@ class InventoryBase(BaseModel):
     stock_quantity: int
     reorder_level: int = 10
     safety_stock: int = 5
-    last_restocked: Optional[date] = None
+    last_restocked: Optional[datetime] = None
 
 class InventoryCreate(InventoryBase):
     pass
@@ -161,7 +161,7 @@ class InventoryResponse(InventoryBase):
 # Orders
 class OrderBase(BaseModel):
     customer_id: int
-    order_date: date
+    order_date: datetime
     status: str = "completed"
     shipping_city: Optional[str] = None
     shipping_state: Optional[str] = None
