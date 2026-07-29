@@ -133,8 +133,22 @@ The platform comes pre-seeded with the following roles for testing auth:
 | **Analyst** | `analyst` | `analyst123` |
 | **Viewer** | `viewer` | `viewer123` |
 
+### BigQuery Data Ingestion (ETL)
+RetailIQ features a robust ETL pipeline designed to pull realistic e-commerce data directly from Google BigQuery:
+1. **Authentication:** Authenticates with Google Cloud via a local service account key (`gcp-service-account.json`).
+2. **Extraction:** Queries the `bigquery-public-data.thelook_ecommerce` public dataset, downloading thousands of records for users, products, distribution centers, and historical orders.
+3. **Transformation:** Utilizing `Pandas`, the raw data is cleaned and mapped to the RetailIQ schema. Missing attributes (e.g., customer income levels, specific stock allocations, mock payments) are synthesized to create a complete testing environment.
+4. **Loading:** The transformed pandas DataFrames are bulk-loaded into the local PostgreSQL database using `SQLAlchemy`.
+
+To run this pipeline manually:
+```bash
+cd analytics
+pip install -r requirements.txt
+python load_bigquery_data.py
+```
+
 ### Business Workflow
-1. **Data Ingestion:** Sales and inventory data flow into PostgreSQL.
+1. **Data Ingestion:** BigQuery ETL pipeline or local sales data flows into PostgreSQL.
 2. **Analysis:** System aggregates daily sales into monthly buckets.
 3. **Forecasting:** Background processes run Holt-Winters models to project future trends.
 4. **Action:** Dashboard highlights items falling below reorder levels allowing managers to review stockout risks.
